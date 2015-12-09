@@ -7,7 +7,7 @@ var sqlLog = function (content) {
 	logger.debug(content);
 };
 
-var sequelize = new Sequelize('tree_demo', config.mysql.username, config.mysql.password, {
+var sequelize = new Sequelize('chain_tree', config.mysql.username, config.mysql.password, {
 	host: config.mysql.host,
 	dialect: 'mysql',
 	logging: sqlLog,

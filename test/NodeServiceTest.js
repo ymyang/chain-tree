@@ -7,9 +7,8 @@ var NodeService = require('../service/NodeService.js');
 describe('NodeService', function() {
     it('insertNode', function(done) {
         var p = {
-            nodeId: 12,
-            nodeName: 'node-12',
-            parentId: 1
+            nodeName: 'node-2',
+            //parentId: 116
         };
         NodeService.insertNode(p).then(function(r) {
             console.log('insertNode:', JSON.stringify(r));
@@ -26,17 +25,40 @@ describe('NodeService', function() {
     });
 
     it('getChildren', function(done) {
-        var nodeid = 1;
+        var nodeid = 106;
         NodeService.getChildren(nodeid).then(function(r) {
             console.log('getChildren:', JSON.stringify(r));
             done();
         }).catch(done);
     });
 
-    it.only('getParents', function(done) {
+    it('getParents', function(done) {
         var nodeid = 12;
         NodeService.getParents(nodeid).then(function(r) {
             console.log('getParents:', JSON.stringify(r));
+            done();
+        }).catch(done);
+    });
+
+    it('copy', function(done) {
+        var p = {
+            nodeIds: [116],
+            toNodeId: 131
+        };
+        NodeService.copy(p).then(function(r) {
+            console.log('insertNode:', JSON.stringify(r));
+            done();
+        }).catch(done);
+    });
+
+
+    it.only('move', function(done) {
+        var p = {
+            nodeIds: [166],
+            toNodeId: 121
+        };
+        NodeService.move(p).then(function(r) {
+            console.log('insertNode:', JSON.stringify(r));
             done();
         }).catch(done);
     });
