@@ -3,6 +3,7 @@
  */
 var sequelize = require('../models').sequelize;
 var Node = require('../models').Node;
+var seq = require('../util/seq.js');
 
 var NodeService = module.exports = {};
 
