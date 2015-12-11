@@ -32,8 +32,8 @@ describe('NodeService', function() {
         }).catch(done);
     });
 
-    it('getParents', function(done) {
-        var nodeid = 12;
+    it.only('getParents', function(done) {
+        var nodeid = 167;
         NodeService.getParents(nodeid).then(function(r) {
             console.log('getParents:', JSON.stringify(r));
             done();
@@ -52,7 +52,7 @@ describe('NodeService', function() {
     });
 
 
-    it.only('move', function(done) {
+    it('move', function(done) {
         var p = {
             nodeIds: [166],
             toNodeId: 121

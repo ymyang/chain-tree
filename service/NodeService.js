@@ -45,7 +45,7 @@ NodeService.getChildren = function(nodeid) {
     return Node.findById(nodeid).then(function (node) {
         var options = {
             where: {
-                parentIds: { $like: node.parentIds + node.nodeId + '-%'}
+                parentIds: { $like: node.parentIds + node.nodeId + '-%' }
             }
         };
         return Node.findAndCountAll(options);
@@ -58,7 +58,29 @@ NodeService.getChildren = function(nodeid) {
 };
 
 NodeService.getParents = function(nodeid) {
-    // TODO
+    return Node.findById(nodeid).then(function(node) {
+        if (!node.parentId) {
+            return [];
+        }
+
+        var parentIds = node.parentIds.split('-').filter(function(parentId) {
+            return parentId;
+        });
+        var opts = {
+            where: {
+                nodeId: { $in: parentIds }
+            },
+            order: 'layer'
+        };
+        return Node.findAll(opts);
+    }).then(function(rows) {
+        if (!rows || !rows.length) {
+            return [];
+        }
+        return rows.map(function(r) {
+            return r.dataValues;
+        });
+    });
 };
 
 NodeService.copy = function(param) {
