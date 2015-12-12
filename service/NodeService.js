@@ -46,7 +46,11 @@ NodeService.getChildren = function(nodeid) {
         var options = {
             where: {
                 parentIds: { $like: node.parentIds + node.nodeId + '-%' }
-            }
+            },
+            order: [
+                'layer',
+                sequelize.literal('convert(node_name using gbk)')
+            ]
         };
         return Node.findAndCountAll(options);
     }).then(function (r) {
