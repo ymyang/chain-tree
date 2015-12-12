@@ -11,7 +11,7 @@ describe('NodeService', function() {
             //parentId: 116
         };
         NodeService.insertNode(p).then(function(r) {
-            console.log('insertNode:', JSON.stringify(r));
+            console.log('insertNode:', r);
             done();
         }).catch(done);
     });
@@ -27,7 +27,7 @@ describe('NodeService', function() {
     it('getChildren', function(done) {
         var nodeid = 106;
         NodeService.getChildren(nodeid).then(function(r) {
-            console.log('getChildren:', JSON.stringify(r));
+            console.log('getChildren:', r);
             done();
         }).catch(done);
     });
@@ -35,7 +35,7 @@ describe('NodeService', function() {
     it.only('getParents', function(done) {
         var nodeid = 167;
         NodeService.getParents(nodeid).then(function(r) {
-            console.log('getParents:', JSON.stringify(r));
+            console.log('getParents:', r);
             done();
         }).catch(done);
     });
@@ -45,8 +45,8 @@ describe('NodeService', function() {
             nodeIds: [116],
             toNodeId: 131
         };
-        NodeService.copy(p).then(function(r) {
-            console.log('insertNode:', JSON.stringify(r));
+        NodeService.copy(p).then(function() {
+            console.log('copy ok');
             done();
         }).catch(done);
     });
@@ -57,8 +57,8 @@ describe('NodeService', function() {
             nodeIds: [166],
             toNodeId: 121
         };
-        NodeService.move(p).then(function(r) {
-            console.log('insertNode:', JSON.stringify(r));
+        NodeService.move(p).then(function() {
+            console.log('move ok');
             done();
         }).catch(done);
     });

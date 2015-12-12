@@ -52,7 +52,9 @@ NodeService.getChildren = function(nodeid) {
     }).then(function (r) {
         return {
             count: r.count,
-            children: r.rows
+            children: r.rows.map(function(r) {
+                return r.dataValues;
+            })
         };
     });
 };
@@ -143,6 +145,8 @@ NodeService.copy = function(param) {
         return sequelize.transaction(function(t) {
             return Node.bulkCreate(_nodes, {transaction: t});
         });
+    }).then(function() {
+        return;
     });
 };
 
