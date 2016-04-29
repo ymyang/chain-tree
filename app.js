@@ -1,14 +1,16 @@
+'use strict';
+
 const TAG = '[app]';
-var http = require('http');
-var morgan = require('morgan');
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var logger = require('./util/logger.js');
+import http from 'http';
+import morgan from 'morgan';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import logger from './util/logger.js';
 
-var routes = require('./routes');
+import routes from './routes';
 
-var app = express();
+const app = express();
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -17,18 +19,16 @@ app.use(cookieParser());
 
 app.disable('x-powered-by');
 
-
 app.use('/', routes);
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 server.listen(3000);
 
-server.on('listening', onListening);
+server.on('listening', () => {
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    console.log(TAG, 'Listening on ', bind);
+});
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
-  console.log(TAG, 'Listening on ', bind);
-}

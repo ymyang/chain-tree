@@ -1,8 +1,9 @@
-var Sequelize = require('sequelize');
-var config = require('../config.json');
-var models = module.exports = {};
+'use strict';
 
-var sequelize = new Sequelize('chain_tree', config.mysql.username, config.mysql.password, {
+import Sequelize from 'sequelize';
+import config from '../config.json';
+
+let sequelize = new Sequelize('chain_tree', config.mysql.username, config.mysql.password, {
 	host: config.mysql.host,
 	dialect: 'mysql',
 	pool: {
@@ -12,6 +13,7 @@ var sequelize = new Sequelize('chain_tree', config.mysql.username, config.mysql.
 	}
 });
 
-models.sequelize = sequelize;
-models.Sequence = sequelize.import('./Sequence.js');
-models.Node = sequelize.import('./Node.js');
+let Sequence = sequelize.import('./Sequence.js');
+let Node = sequelize.import('./Node.js');
+
+export { sequelize, Sequence, Node };

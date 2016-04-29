@@ -1,10 +1,13 @@
-var express = require('express');
-var logger = require('../util/logger.js');
+'use strict';
 
-var router = module.exports = express.Router();
+import express from 'express';
+import logger from '../util/logger.js';
+import tree from './tree.js';
+
+let router = express.Router();
 
 
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
   var params = '';
   var str = req.headers['content-type'] || '';
   var mime = str.split(';')[0];
@@ -17,12 +20,12 @@ router.use(function (req, res, next) {
 });
 
 
-router.use(require('./tree.js'));
+router.use(tree);
 
 
 
 // catch 404 and forward to error handler
-router.use(function(req, res, next) {
+router.use((req, res, next) => {
   var err = new Error('Not Found:' + req.url);
   err.status = 404;
   next(err);
@@ -32,9 +35,10 @@ router.use(function(req, res, next) {
 
 // production error handler
 // no stacktraces leaked to user
-router.use(function(err, req, res, next) {
+router.use((err, req, res, next) => {
   logger.error('[url]:', req.url, err);
   res.status(err.status || 500);
   res.send(err.message);
 });
 
+export default router;

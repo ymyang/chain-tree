@@ -1,12 +1,11 @@
 /**
  * Created by yang on 2015/6/24.
  */
-var Promise = require('bluebird');
-var sequelize = require('../models').sequelize;
-var Sequence = require('../models/').Sequence;
-var _ = require('lodash');
+'use strict';
 
-var seq = module.exports = {};
+import _ from 'lodash';
+import Promise from 'bluebird';
+import { sequelize, Sequence } from '../models';
 
 const CACHE_SIZE = 5;
 const INIT_VALUE = 100;
@@ -15,12 +14,12 @@ const GLOBAL_ID = 'global_id';
 const SQL_SELECT_SEQ = "SELECT `seq_name` AS `seqName`, `seq_value` AS `seqValue` FROM `sequence` AS `Sequence`"
     + " WHERE `Sequence`.`seq_name` = 'global_id' FOR UPDATE";
 
-var currentSeqValue = INIT_VALUE;
-var maxSeqValue = 0;
+let currentSeqValue = INIT_VALUE;
+let maxSeqValue = 0;
 
-seq.getNextId = function (max) {
+export function getNextId(max) {
     if (max) {
-        var tasks = _.range(max).map(function() {
+        let tasks = _.range(max).map(() => {
             return seq.getNextId();
         });
 
@@ -29,22 +28,22 @@ seq.getNextId = function (max) {
         if (currentSeqValue < maxSeqValue) {
             return Promise.resolve(++currentSeqValue);
         }
-        return setupSeqValue().then(function () {
+        return setupSeqValue().then(() => {
             return Promise.resolve(++currentSeqValue);
         });
     }
 };
 
 function setupSeqValue() {
-    return new Promise(function (resolve, reject) {
-        sequelize.transaction({autocommit: false}).then(function (t) {
+    return new Promise((resolve, reject) => {
+        sequelize.transaction({autocommit: false}).then((t) => {
             sequelize.query(SQL_SELECT_SEQ, {
                 type: sequelize.QueryTypes.SELECT,
                 transaction: t,
                 model: Sequence
-            }).then(function (seq) {
+            }).then((seq) => {
                 if (seq[0]) {
-                    var _seqValueInDb = seq[0].seqValue;
+                    let _seqValueInDb = seq[0].seqValue;
                     //console.log('_seqValueInDb:', _seqValueInDb, ', currentSeqValue:', currentSeqValue);
                     if (currentSeqValue === INIT_VALUE || _seqValueInDb <= currentSeqValue) {
                         currentSeqValue = _seqValueInDb;
@@ -67,10 +66,10 @@ function setupSeqValue() {
                     seq.seqValue = maxSeqValue;
                     return Sequence.create(seq, {transaction: t});
                 }
-            }).then(function () {
+            }).then(() => {
                 t.commit();
                 resolve();
-            }).catch(function (err) {
+            }).catch((err) => {
                 t.rollback();
                 reject(err);
             });

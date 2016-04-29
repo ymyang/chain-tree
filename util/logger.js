@@ -1,10 +1,12 @@
 /**
  * Created by yang on 2015/6/2.
  */
-var winston = require("winston");
-var config = require('../config.json');
+'use strict';
 
-var customLevels = {
+import winston from "winston";
+import config from '../config.json';
+
+let customLevels = {
     levels: {
         trace: 0,
         debug: 1,
@@ -23,7 +25,7 @@ var customLevels = {
 
 winston.addColors(customLevels.colors);
 
-module.exports = new (winston.Logger)({
+export default new (winston.Logger)({
     levels: customLevels.levels,
     transports: [
         new (winston.transports.Console)({

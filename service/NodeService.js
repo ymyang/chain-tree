@@ -1,33 +1,33 @@
 /**
  * Created by yang on 2015/6/11.
  */
-var _ = require('lodash');
-var Promise = require('bluebird');
-var sequelize = require('../models').sequelize;
-var Node = require('../models').Node;
-var seq = require('../util/seq.js');
+'use strict';
 
-var NodeService = module.exports = {};
+import _ from 'lodash';
+import Promise from 'bluebird';
+import models from '../models';
+import { sequelize, Node } from '../models';
+import seq from '../util/seq.js';
 
-NodeService.insertNode = function(param) {
-    return seq.getNextId().then(function (id) {
+export function insertNode(param) {
+    return seq.getNextId().then((id) => {
         param.nodeId = id;
         return _getParentIdsAndLayer(param.parentId);
-    }).then(function(r) {
+    }).then((r) => {
         param.parentIds = r.parentIds;
         param.layer = r.layer;
-        return sequelize.transaction(function (t) {
+        return sequelize.transaction((t) => {
             return Node.create(param, {transaction: t});
         });
-    }).then(function(r) {
+    }).then((r) => {
         return r.dataValues;
     });
 };
 
-NodeService.deleteNode = function(nodeid) {
-    return Node.findById(nodeid).then(function (node) {
-        return sequelize.transaction(function(t) {
-            var options = {
+export function deleteNode(nodeid) {
+    return Node.findById(nodeid).then((node) => {
+        return sequelize.transaction((t) => {
+            let options = {
                 where: { $or: [
                     { nodeId: nodeid },
                     { parentIds: { $like: node.parentIds + node.nodeId + '-%'}}
@@ -36,14 +36,14 @@ NodeService.deleteNode = function(nodeid) {
             };
             return Department.destroy(options);
         });
-    }).then(function (r) {
+    }).then((r) => {
         return r;
     });
 };
 
-NodeService.getChildren = function(nodeid) {
-    return Node.findById(nodeid).then(function (node) {
-        var options = {
+export function getChildren(nodeid) {
+    return Node.findById(nodeid).then((node) => {
+        let options = {
             where: {
                 parentIds: { $like: node.parentIds + node.nodeId + '-%' }
             },
@@ -53,130 +53,130 @@ NodeService.getChildren = function(nodeid) {
             ]
         };
         return Node.findAndCountAll(options);
-    }).then(function (r) {
+    }).then((r) => {
         return {
             count: r.count,
-            children: r.rows.map(function(r) {
+            children: r.rows.map((r) => {
                 return r.dataValues;
             })
         };
     });
 };
 
-NodeService.getParents = function(nodeid) {
-    return Node.findById(nodeid).then(function(node) {
+export function getParents(nodeid) {
+    return Node.findById(nodeid).then((node) => {
         if (!node.parentId) {
             return [];
         }
 
-        var parentIds = node.parentIds.split('-').filter(function(parentId) {
+        let parentIds = node.parentIds.split('-').filter((parentId) => {
             return parentId;
         });
-        var opts = {
+        let opts = {
             where: {
                 nodeId: { $in: parentIds }
             },
             order: 'layer'
         };
         return Node.findAll(opts);
-    }).then(function(rows) {
+    }).then((rows) => {
         if (!rows || !rows.length) {
             return [];
         }
-        return rows.map(function(r) {
+        return rows.map((r) => {
             return r.dataValues;
         });
     });
 };
 
-NodeService.copy = function(param) {
-    var _nodes = undefined;
-    var _topNodes = undefined;
-    var _subNodes = undefined;
-    var _fromId = undefined;
-    return _getNodes(param.nodeIds).then(function(nodes) {
+export function copy(param) {
+    let _nodes = undefined;
+    let _topNodes = undefined;
+    let _subNodes = undefined;
+    let _fromId = undefined;
+    return _getNodes(param.nodeIds).then((nodes) => {
         _topNodes = nodes;
         _fromId = _getSameParentId(nodes);
 
         return _getAllChildren(nodes);
-    }).then(function(children) {
+    }).then((children) => {
         _subNodes = children;
         _nodes = _topNodes.concat(_subNodes);
         return seq.getNextId(_nodes.length);
-    }).then(function(ids) {
-        _nodes.forEach(function(n, i) {
+    }).then((ids) => {
+        _nodes.forEach((n, i) => {
             n.oldNodeId = n.nodeId;
             n.nodeId = ids[i];
         });
         return _getFromTo(_fromId, param.toNodeId);
-    }).then(function(r) {
-        var from = r.from;
-        var to = r.to;
+    }).then((r) => {
+        let from = r.from;
+        let to = r.to;
 
-        // 修改节点信息
-        _nodes.forEach(function(n) {
+        // 淇敼鑺傜偣淇℃伅
+        _nodes.forEach((n) => {
             n.layer = n.layer - from.layer + to.layer;
         });
 
-        // 修改顶级节点的parentId
+        // 淇敼椤剁骇鑺傜偣鐨刾arentId
         _changeParentId(_topNodes, param.toNodeId);
 
-        // 计算子节点的parentId          n
-        _subNodes.forEach(function(n) {
-            var parent = _nodes.filter(function(p) {
+        // 璁＄畻瀛愯妭鐐圭殑parentId          n
+        _subNodes.forEach((n) => {
+            let parent = _nodes.filter((p) => {
                 return n.parentIds === (p.parentIds + p.oldNodeId + '-');
             })[0];
             n.parentId = parent.nodeId;
         });
-        // 计算parentIds
-        var toParentIds = '-';
+        // 璁＄畻parentIds
+        let toParentIds = '-';
         if (to.nodeId) {
             toParentIds = to.parentIds + to.nodeId + '-';
         }
-        // 修改顶级节点的parentIds
-        _topNodes.forEach(function(n) {
+        // 淇敼椤剁骇鑺傜偣鐨刾arentIds
+        _topNodes.forEach((n) => {
             delete n.oldFileId;
             n.parentIds = toParentIds;
         });
-        // 计算子节点的parentIds
-        _subNodes.forEach(function(n) {
+        // 璁＄畻瀛愯妭鐐圭殑parentIds
+        _subNodes.forEach((n) => {
             delete n.oldNodeId;
-            var parent = _nodes.filter(function(p) {
+            let parent = _nodes.filter((p) => {
                 return n.parentId === p.nodeId;
             })[0];
             n.parentIds = parent.parentIds + parent.nodeId + '-';
         });
-        return sequelize.transaction(function(t) {
+        return sequelize.transaction((t) => {
             return Node.bulkCreate(_nodes, {transaction: t});
         });
-    }).then(function() {
+    }).then(() => {
         return;
     });
 };
 
-NodeService.move = function(param) {
-    var _nodes = undefined;
-    var _topNodes = undefined;
-    var _fromId = undefined;
-    return _getNodes(param.nodeIds).then(function(nodes) {
+export function move(param) {
+    let _nodes = undefined;
+    let _topNodes = undefined;
+    let _fromId = undefined;
+    return _getNodes(param.nodeIds).then((nodes) => {
         _topNodes = nodes;
         _fromId = _getSameParentId(nodes);
 
         return _checkMoveToSub(param.toNodeId, _fromId, nodes);
-    }).then(function() {
+    }).then(() => {
         return _getAllChildren(_topNodes);
-    }).then(function(children) {
+    }).then((children) => {
         _nodes = _topNodes.concat(children);
         return _getFromTo(_fromId, param.toNodeId);
-    }).then(function(r) {
-        var from = r.from;
-        var to = r.to;
+    }).then((r) => {
+        let from = r.from;
+        let to = r.to;
 
-        // 修改顶级节点的parentId
+        // 淇敼椤剁骇鑺傜偣鐨刾arentId
         _changeParentId(_topNodes, param.toNodeId);
 
-        return sequelize.transaction(function(t) {
-            var tasks = _nodes.map(function(n) {
+        return sequelize.transaction((t) => {
+            let tasks = _nodes.map((n) => {
                 return Node.update({
                     parentId: n.parentId,
                     parentIds: _getNewParentIds(n, from, to),
@@ -185,23 +185,23 @@ NodeService.move = function(param) {
             });
             return Promise.all(tasks);
         });
-    }).then(function() {
+    }).then(() => {
         return;
     });
 };
 
 /**
- * 通过 parentId 获取 parentIds和layer
+ * 閫氳繃 parentId 鑾峰彇 parentIds鍜宭ayer
  * @param parentId
  * @returns {Promise}
  */
 function _getParentIdsAndLayer(parentId) {
-    var r = {
+    let r = {
         parentIds: '-',
         layer: 0
     };
     if (parentId) {
-        return Node.findById(parentId).then(function(parent) {
+        return Node.findById(parentId).then((parent) => {
             r.parentIds = parent.parentIds || '-';
             r.parentIds += parent.nodeId + '-';
             r.layer = parent.layer + 1;
@@ -213,7 +213,7 @@ function _getParentIdsAndLayer(parentId) {
 }
 
 function _checkSameNameNode(node) {
-    var options = {
+    let options = {
         where: {
             parentId: node.parentId || null,
             nodeName: node.nodeName
@@ -222,9 +222,9 @@ function _checkSameNameNode(node) {
     if (node.nodeId) {
         options.where.nodeId = { $ne: node.nodeId};
     }
-    return Node.findOne(options).then(function(r) {
+    return Node.findOne(options).then((r) => {
         if (f) {
-            var err = new Error();
+            let err = new Error();
             err.message = node.nodeName + ' already exists';
             throw err;
         }
@@ -233,7 +233,7 @@ function _checkSameNameNode(node) {
 }
 
 function _checkSameNameNodes(nodes, toNodeId) {
-    var tasks = nodes.map(function(n) {
+    let tasks = nodes.map((n) => {
         return _checkSameNameNode({
             parentId: toNodeId,
             nodeName: n.nodeName
@@ -247,13 +247,13 @@ function _checkMoveToSub(toNodeId, fromNodeId, nodes) {
         return Promise.resolve();
     }
 
-    return Node.findById(toNodeId).then(function(toNode) {
-        var p1 = toNode.parentIds + toNode.nodeId + '-';
+    return Node.findById(toNodeId).then((toNode) => {
+        let p1 = toNode.parentIds + toNode.nodeId + '-';
         if (fromNodeId) {
-            return Node.findById(fromNodeId).then(function(from) {
-                var p2 = from.parentIds + from.nodeId + '-';
+            return Node.findById(fromNodeId).then((from) => {
+                let p2 = from.parentIds + from.nodeId + '-';
                 if (p1.indexOf(p2) === 0) {
-                    var err = new Error();
+                    let err = new Error();
                     err.message = 'can not move to the sub node: ' + n.nodeName;
                     throw err;
                 }
@@ -261,10 +261,10 @@ function _checkMoveToSub(toNodeId, fromNodeId, nodes) {
             });
         }
 
-        nodes.forEach(function(n) {
-            var p2 = n.parentIds + n.nodeId + '-';
+        nodes.forEach((n) => {
+            let p2 = n.parentIds + n.nodeId + '-';
             if (p1.indexOf(p2) === 0) {
-                var err = new Error();
+                let err = new Error();
                 err.message = 'can not move to the sub node: ' + n.nodeName;
                 throw err;
             }
@@ -275,35 +275,35 @@ function _checkMoveToSub(toNodeId, fromNodeId, nodes) {
 }
 
 function _getNodes(nodeIds) {
-    var options = {
+    let options = {
         where: {
             nodeId: { $in: nodeIds }
         }
     };
-    return Node.findAll(options).then(function(rows) {
-        return rows.map(function(r) {
+    return Node.findAll(options).then((rows) => {
+        return rows.map((r) => {
             return r.dataValues;
         });
     });
 }
 
 function _getAllChildren(nodes) {
-    return Promise.reduce(nodes, function(total, node) {
+    return Promise.reduce(nodes, (total, node) => {
         total = total || [];
-        return _getChildren(node).then(function(children) {
+        return _getChildren(node).then((children) => {
             return total.concat(children);
         });
     }, 0);
 }
 
 function _getChildren(node) {
-    var options = {
+    let options = {
         where: {
             parentIds: { $like: node.parentIds + node.nodeId + '-%'}
         }
     };
-    return Node.findAll(options).then(function(rows) {
-        return rows.map(function(r) {
+    return Node.findAll(options).then((rows) => {
+        return rows.map((r) => {
             return r.dataValues;
         });
     });
@@ -318,8 +318,8 @@ function _getFromTo(fromNodeId, toNodeId) {
 
 
 function _changeParentId(nodes, parentId) {
-    nodes.forEach(function(n) {
-        // 修改parentId
+    nodes.forEach((n) => {
+        // 淇敼parentId
         n.parentId = parentId ? parentId : null;
     });
 }
@@ -330,37 +330,37 @@ function _getSameParentId(nodes) {
 
 function _getSameValue(nodes, key) {
     if (nodes && nodes.length) {
-        var v = nodes[0][key];
+        let v = nodes[0][key];
         if (nodes.length > 1) {
-            var f = nodes.every(function(f) {
+            let f = nodes.every((f) => {
                 return f[key] === v;
             });
             if (!f) {
-                var err = new Error();
+                let err = new Error();
                 err.message = 'nodes are not in a same ' + key;
                 throw err;
             }
         }
         return v;
     }
-    var err = new Error();
+    let err = new Error();
     err.message = 'nodes are empty';
     throw err;
 }
 
 function _changeParentId(nodes, parentId) {
-    nodes.forEach(function(n) {
-        // 修改parentId
+    nodes.forEach((n) => {
+        // 淇敼parentId
         n.parentId = parentId ? parentId : null;
     });
 }
 
 function _getNewParentIds(node, from, to) {
-    var fromParentIds = '-';
+    let fromParentIds = '-';
     if (from.nodeId) {
         fromParentIds = from.parentIds + from.nodeId + '-';
     }
-    var toParentIds = '-';
+    let toParentIds = '-';
     if (to.nodeId) {
         toParentIds = to.parentIds + to.nodeId + '-';
     }
@@ -371,7 +371,7 @@ function _replaceStart(str, start, newStart) {
     if (start == newStart) {
         return str;
     }
-    var s = str;
+    let s = str;
     if (start && _.startsWith(str, start)) {
         s = str.substring(start.length);
     }
