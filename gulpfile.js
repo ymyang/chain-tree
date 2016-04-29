@@ -21,7 +21,7 @@ gulp.task('js', () => {
         .pipe(babel({
             presets: ['es2015']
         }))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('./build'));
 });
 

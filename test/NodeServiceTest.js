@@ -1,63 +1,64 @@
 /**
  * Created by yang on 2015/12/9.
  */
+'use strict';
 
-var NodeService = require('../service/NodeService.js');
+const NodeService = require('../service/NodeService.js');
 
-describe('NodeService', function() {
-    it('insertNode', function(done) {
-        var p = {
+describe('NodeService', () => {
+    it('insertNode', (done) => {
+        let p = {
             nodeName: 'node-2',
             //parentId: 116
         };
-        NodeService.insertNode(p).then(function(r) {
+        NodeService.insertNode(p).then((r) => {
             console.log('insertNode:', r);
             done();
         }).catch(done);
     });
 
-    it('deleteNode', function(done) {
-        var nodeid = 1;
-        NodeService.deleteNode(nodeid).then(function() {
+    it('deleteNode', (done) => {
+        let nodeid = 1;
+        NodeService.deleteNode(nodeid).then(() => {
             console.log('deleteNode ok');
             done();
         }).catch(done);
     });
 
-    it.only('getChildren', function(done) {
-        var nodeid = 106;
-        NodeService.getChildren(nodeid).then(function(r) {
+    it.only('getChildren', (done) => {
+        let nodeid = 106;
+        NodeService.getChildren(nodeid).then((r) => {
             console.log('getChildren:', r);
             done();
         }).catch(done);
     });
 
-    it('getParents', function(done) {
-        var nodeid = 167;
-        NodeService.getParents(nodeid).then(function(r) {
+    it('getParents', (done) => {
+        let nodeid = 167;
+        NodeService.getParents(nodeid).then((r) => {
             console.log('getParents:', r);
             done();
         }).catch(done);
     });
 
-    it('copy', function(done) {
-        var p = {
+    it('copy', (done) => {
+        let p = {
             nodeIds: [116],
             toNodeId: 131
         };
-        NodeService.copy(p).then(function() {
+        NodeService.copy(p).then(() => {
             console.log('copy ok');
             done();
         }).catch(done);
     });
 
 
-    it('move', function(done) {
-        var p = {
+    it('move', (done) => {
+        let p = {
             nodeIds: [166],
             toNodeId: 121
         };
-        NodeService.move(p).then(function() {
+        NodeService.move(p).then(() => {
             console.log('move ok');
             done();
         }).catch(done);
