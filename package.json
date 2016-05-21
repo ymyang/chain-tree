@@ -21,14 +21,14 @@
   },
   "homepage": "https://github.com/ymyang/chain-tree#readme",
   "dependencies": {
-    "bluebird": "^3.0.6",
-    "body-parser": "^1.14.1",
+    "bluebird": "^3.3.5",
+    "body-parser": "^1.15.1",
     "cookie-parser": "^1.4.0",
-    "express": "^4.13.3",
-    "lodash": "^3.10.1",
-    "morgan": "^1.6.1",
-    "mysql": "^2.9.0",
-    "sequelize": "^3.14.2",
+    "express": "^4.13.4",
+    "lodash": "^4.12.0",
+    "morgan": "^1.7.0",
+    "mysql": "^2.10.2",
+    "sequelize": "^3.23.2",
     "winston": "^2.1.1"
   },
   "devDependencies": {
@@ -37,6 +37,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-uglify": "^1.5.3",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "sequelize-gen": "^1.2.1"
   }
 }

@@ -4,6 +4,7 @@ const gulp = require('gulp');
 const uglify = require('gulp-uglify');
 const babel = require('gulp-babel');
 const del = require('del');
+const SequelizeAuto = require('sequelize-gen');
 
 gulp.task('clean', () => {
     del(['./build']);
@@ -28,6 +29,17 @@ gulp.task('js', () => {
 gulp.task('json', () => {
     return gulp.src('./*.json')
         .pipe(gulp.dest('./build'));
+});
+
+gulp.task('models', function() {
+    let auto = new SequelizeAuto('chain_tree', 'root', 'admin');
+    auto.run(function(err) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(yliyun.tables);
+    });
 });
 
 gulp.task('build', ['json', 'js']);
