@@ -31,14 +31,14 @@ gulp.task('json', () => {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('models', function() {
+gulp.task('models', () => {
     let auto = new SequelizeAuto('chain_tree', 'root', 'admin');
-    auto.run(function(err) {
+    auto.run((err) => {
         if (err) {
             console.error(err);
             return;
         }
-        console.log(yliyun.tables);
+        console.log(auto.tables);
     });
 });
 
