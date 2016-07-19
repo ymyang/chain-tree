@@ -1,7 +1,7 @@
 'use strict';
 
 import Sequelize from 'sequelize';
-import config from '../config.json';
+import config from '../util/config.js';
 
 let sequelize = new Sequelize('chain_tree', config.mysql.username, config.mysql.password, {
 	host: config.mysql.host,

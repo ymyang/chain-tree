@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const NodeService = require('../service/NodeService.js');
+const NodeService = require('../build/service/NodeService.js');
 
 describe('NodeService', () => {
     it('insertNode', (done) => {

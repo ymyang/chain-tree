@@ -4,7 +4,7 @@
 'use strict';
 
 import winston from "winston";
-import config from '../config.json';
+import config from './config.js';
 
 let customLevels = {
     levels: {

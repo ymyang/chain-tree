@@ -1,0 +1,50 @@
+/**
+ * Created by yang on 2016/7/6.
+ */
+'use strict';
+
+const webpack = require('webpack');
+
+let externals = _externals();
+
+console.log(externals);
+
+module.exports = {
+    entry: {
+        app: './app.js',
+    },
+    target: 'node',
+    output: {
+        path: './build',
+        filename: '[name].js'
+    },
+    resolve: {
+        extensions: ['', '.js']
+    },
+    externals: externals,
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel',
+                query: {
+                    presets: ['es2015']
+                },
+                exclude: /node_modules/
+            }
+        ]
+    },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin()
+    ]
+};
+
+function _externals() {
+    let manifest = require('./package.json');
+    let dependencies = manifest.dependencies;
+    let externals = {};
+    for (let p in dependencies) {
+        externals[p] = 'commonjs ' + p;
+    }
+    return externals;
+}

@@ -5,7 +5,6 @@
 
 import _ from 'lodash';
 import Promise from 'bluebird';
-import models from '../models';
 import { sequelize, Node } from '../models';
 import seq from '../util/seq.js';
 
@@ -22,7 +21,7 @@ export function insertNode(param) {
     }).then((r) => {
         return r.dataValues;
     });
-};
+}
 
 export function deleteNode(nodeid) {
     return Node.findById(nodeid).then((node) => {
@@ -39,7 +38,7 @@ export function deleteNode(nodeid) {
     }).then((r) => {
         return r;
     });
-};
+}
 
 export function getChildren(nodeid) {
     return Node.findById(nodeid).then((node) => {
@@ -61,7 +60,7 @@ export function getChildren(nodeid) {
             })
         };
     });
-};
+}
 
 export function getParents(nodeid) {
     return Node.findById(nodeid).then((node) => {
@@ -87,7 +86,7 @@ export function getParents(nodeid) {
             return r.dataValues;
         });
     });
-};
+}
 
 export function copy(param) {
     let _nodes = undefined;
@@ -152,7 +151,7 @@ export function copy(param) {
     }).then(() => {
         return;
     });
-};
+}
 
 export function move(param) {
     let _nodes = undefined;
@@ -188,7 +187,7 @@ export function move(param) {
     }).then(() => {
         return;
     });
-};
+}
 
 /**
  * 通过 parentId 获取 parentIds和layer

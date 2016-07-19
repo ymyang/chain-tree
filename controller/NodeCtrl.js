@@ -17,7 +17,7 @@ export function insertNode(req, res) {
         res.status(err.status || 500);
         res.send(err.message);
     });
-};
+}
 
 export function deleteNode(req, res) {
     NodeService.deleteNode(req.query.nodeid).then((r) => {
@@ -27,7 +27,7 @@ export function deleteNode(req, res) {
         res.status(err.status || 500);
         res.send(err.message);
     });
-};
+}
 
 export function getChildren(req, res) {
     NodeService.getChildren(req.query.nodeid).then((r) => {
@@ -37,7 +37,7 @@ export function getChildren(req, res) {
         res.status(err.status || 500);
         res.send(err.message);
     });
-};
+}
 
 export function getParents(req, res) {
     NodeService.getParents(req.query.nodeid).then((r) => {
@@ -47,4 +47,4 @@ export function getParents(req, res) {
         res.status(err.status || 500);
         res.send(err.message);
     });
-};
+}

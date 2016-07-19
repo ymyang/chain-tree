@@ -25,8 +25,8 @@ const server = http.createServer(app);
 server.listen(3000);
 
 server.on('listening', () => {
-    let addr = server.address();
-    let bind = typeof addr === 'string'
+    const addr = server.address();
+    const bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     console.log(TAG, 'Listening on ', bind);
