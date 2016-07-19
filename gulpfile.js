@@ -5,6 +5,7 @@ const uglify = require('gulp-uglify');
 const babel = require('gulp-babel');
 const del = require('del');
 const SequelizeAuto = require('sequelize-gen');
+const webpack = require('webpack');
 
 gulp.task('clean', () => {
     del(['./build']);
@@ -20,15 +21,38 @@ gulp.task('js', () => {
         '!test/**'
     ])
         .pipe(babel({
-            presets: ['es2015']
+            presets: ['es2015','stage-0']
         }))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('./build'));
 });
 
 gulp.task('json', () => {
     return gulp.src('./*.json')
         .pipe(gulp.dest('./build'));
+});
+
+gulp.task('jsmodels', () => {
+    gulp.src([
+        'models/*.js',
+        '!models/index.js'
+    ])
+        .pipe(babel({
+            presets: ['es2015','stage-0']
+        }))
+        .pipe(uglify())
+        .pipe(gulp.dest('./build'));
+});
+
+gulp.task('webpack', ['json','jsmodels'], () => {
+    let config = require('./webpack.config.js');
+    webpack(config, (err, stats) => {
+        if (err) {
+            console.error('webpack', err);
+            return;
+        }
+        console.log('webpack ok');
+    });
 });
 
 gulp.task('models', () => {
@@ -44,4 +68,4 @@ gulp.task('models', () => {
 
 gulp.task('build', ['json', 'js']);
 
-gulp.task('default', ['build']);
+gulp.task('default', ['webpack']);

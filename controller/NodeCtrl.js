@@ -8,6 +8,13 @@ import NodeService from '../service/NodeService.js';
 import NodeParam from '../params/nodes';
 import logger from '../util/logger.js';
 
+export default {
+    insertNode,
+    deleteNode,
+    getChildren,
+    getParents
+}
+
 export function insertNode(req, res) {
     let param = new NodeParam(req.body);
     NodeService.insertNode(param).then((r) => {

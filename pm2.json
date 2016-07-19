@@ -1,0 +1,12 @@
+[
+  {
+    "name": "app",
+    "script": "/opt/yliyun/work/node/app.js",
+    "instances": 2,
+    "max_memory_restart": "1024M",
+    "pid_file": "/opt/yliyun/logs/node/app.pid",
+    "error_file": "/opt/yliyun/logs/node/app-err.log",
+    "out_file": "/opt/yliyun/logs/node/app.log",
+    "log_date_format": "YYYY-MM-DD HH:mm:ss"
+  }
+]

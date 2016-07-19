@@ -22,6 +22,15 @@ module.exports = {
         extensions: ['', '.js']
     },
     externals: externals,
+    node: {
+        console: true,
+        global: true,
+        process: true,
+        Buffer: true,
+        __filename: true,
+        __dirname: true,
+        setImmediate: true
+    },
     module: {
         loaders: [
             {

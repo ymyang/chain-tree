@@ -29,7 +29,7 @@ export default new (winston.Logger)({
     levels: customLevels.levels,
     transports: [
         new (winston.transports.Console)({
-            level: config.env === 'dev' ? 'trace' : 'error',
+            level: 'error',
             colorize: true,
             handleExceptions: true
         })

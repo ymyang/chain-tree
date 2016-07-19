@@ -8,6 +8,15 @@ import Promise from 'bluebird';
 import { sequelize, Node } from '../models';
 import seq from '../util/seq.js';
 
+export default {
+    insertNode,
+    deleteNode,
+    getChildren,
+    getParents,
+    copy,
+    move
+}
+
 export function insertNode(param) {
     return seq.getNextId().then((id) => {
         param.nodeId = id;

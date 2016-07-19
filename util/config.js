@@ -8,6 +8,8 @@ const jetpack = require('fs-jetpack');
 
 let configfile = path.join(__dirname, '../config.json');
 
+console.log('configfile:', configfile);
+
 let config = jetpack.read(configfile, 'json');
 
-module.exports = config;
+export default config
