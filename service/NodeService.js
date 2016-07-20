@@ -5,7 +5,7 @@
 
 import _ from 'lodash';
 import Promise from 'bluebird';
-import { sequelize, Node } from '../models';
+import { sequelize, Node } from '../models.js';
 import seq from '../util/seq.js';
 
 export default {

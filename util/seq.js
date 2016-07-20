@@ -5,7 +5,7 @@
 
 import _ from 'lodash';
 import Promise from 'bluebird';
-import { sequelize, Sequence } from '../models';
+import { sequelize, Sequence } from '../models.js';
 
 const CACHE_SIZE = 5;
 const INIT_VALUE = 100;

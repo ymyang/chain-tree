@@ -34,14 +34,13 @@ gulp.task('json', () => {
 
 gulp.task('jsmodels', () => {
     gulp.src([
-        'models/*.js',
-        '!models/index.js'
+        'models/*.js'
     ])
         .pipe(babel({
             presets: ['es2015','stage-0']
         }))
         .pipe(uglify())
-        .pipe(gulp.dest('./build'));
+        .pipe(gulp.dest('./build/models'));
 });
 
 gulp.task('webpack', ['json','jsmodels'], () => {
