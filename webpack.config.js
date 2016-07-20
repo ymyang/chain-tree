@@ -7,8 +7,6 @@ const webpack = require('webpack');
 
 let externals = _externals();
 
-console.log(externals);
-
 module.exports = {
     entry: {
         app: './app.js',
