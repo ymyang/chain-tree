@@ -8,7 +8,9 @@ const jetpack = require('fs-jetpack');
 
 let configfile = path.join(__dirname, '../config.json');
 
-console.log('configfile:', configfile);
+if (!jetpack.exists(configfile)) {
+    configfile = path.join(__dirname, './config.json');
+}
 
 let config = jetpack.read(configfile, 'json');
 
