@@ -2,6 +2,7 @@
   {
     "name": "app",
     "script": "/opt/yliyun/work/node/app.js",
+    "cwd": "/opt/yliyun/work/node",
     "instances": 2,
     "max_memory_restart": "1024M",
     "pid_file": "/opt/yliyun/logs/node/app.pid",
